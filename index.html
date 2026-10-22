@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +21,7 @@
     }
 
     .calculator {
-      max-width: 650px;
+      max-width: 700px;
       margin: 0 auto;
       padding: 28px;
       background: white;
@@ -44,7 +45,7 @@
       border: 1px solid #bbf7d0;
       border-radius: 15px;
       padding: 22px;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
     .result-label {
@@ -67,9 +68,29 @@
       overflow-wrap: anywhere;
     }
 
+    .real-value-card {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 15px;
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+
+    .real-value-card .result-label {
+      color: #1d4ed8;
+    }
+
+    .real-value-card .total-crores {
+      color: #1d4ed8;
+    }
+
+    .real-value-card .total-rupees {
+      color: #1e40af;
+    }
+
     .summary {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 28px;
     }
@@ -85,11 +106,12 @@
       display: block;
       color: #64748b;
       font-size: 13px;
+      line-height: 1.5;
       margin-bottom: 8px;
     }
 
     .summary-item strong {
-      font-size: 19px;
+      font-size: 18px;
       overflow-wrap: anywhere;
     }
 
@@ -135,7 +157,7 @@
       padding: 14px;
       border-radius: 10px;
       font-size: 12px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     .reset-button {
@@ -171,13 +193,19 @@
   <main class="calculator">
     <h1>Investment Calculator</h1>
     <p class="subtitle">
-      Calculate how your monthly investments could grow over time.
+      Estimate your future wealth and what it may be worth after inflation.
     </p>
 
     <section class="result-card">
       <p class="result-label">Estimated final investment value</p>
       <div class="total-crores" id="totalCrores">Rs. 0.00 crores</div>
       <div class="total-rupees" id="totalRupees">Rs. 0</div>
+    </section>
+
+    <section class="real-value-card">
+      <p class="result-label">Value in today's money (after inflation)</p>
+      <div class="total-crores" id="realCrores">Rs. 0.00 crores</div>
+      <div class="total-rupees" id="realRupees">Rs. 0</div>
     </section>
 
     <section class="summary">
@@ -190,22 +218,26 @@
         <span>Estimated investment growth</span>
         <strong id="growth">Rs. 0</strong>
       </div>
+
+      <div class="summary-item">
+        <span>Growth after adjusting for inflation*</span>
+        <strong id="realGrowth">Rs. 0</strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Effective annual real return</span>
+        <strong id="realRate">3.00%</strong>
+      </div>
     </section>
 
     <div class="control">
       <div class="control-header">
         <label for="monthly">Monthly investment</label>
-        <output id="monthlyValue">Rs. 200,000</output>
+        <output id="monthlyValue">Rs. 25,000</output>
       </div>
 
-      <input
-        type="range"
-        id="monthly"
-        min="1000"
-        max="200000"
-        step="1000"
-        value="200000"
-      />
+      <input type="range" id="monthly"
+        min="1000" max="200000" step="1000" value="25000" />
 
       <div class="range-labels">
         <span>Rs. 1,000</span>
@@ -220,14 +252,8 @@
         <output id="yearsValue">10 years</output>
       </div>
 
-      <input
-        type="range"
-        id="years"
-        min="1"
-        max="30"
-        step="1"
-        value="10"
-      />
+      <input type="range" id="years"
+        min="1" max="30" step="1" value="10" />
 
       <div class="range-labels">
         <span>1 year</span>
@@ -238,22 +264,32 @@
 
     <div class="control">
       <div class="control-header">
-        <label for="rate">Assumed annual return</label>
+        <label for="rate">Assumed annual investment return</label>
         <output id="rateValue">8%</output>
       </div>
 
-      <input
-        type="range"
-        id="rate"
-        min="0"
-        max="15"
-        step="1"
-        value="8"
-      />
+      <input type="range" id="rate"
+        min="0" max="20" step="0.5" value="8" />
 
       <div class="range-labels">
         <span>0%</span>
-        <span>8%</span>
+        <span>10%</span>
+        <span>20%</span>
+      </div>
+    </div>
+
+    <div class="control">
+      <div class="control-header">
+        <label for="inflation">Assumed annual inflation</label>
+        <output id="inflationValue">5%</output>
+      </div>
+
+      <input type="range" id="inflation"
+        min="0" max="15" step="0.5" value="5" />
+
+      <div class="range-labels">
+        <span>0%</span>
+        <span>7.5%</span>
         <span>15%</span>
       </div>
     </div>
@@ -263,10 +299,13 @@
     </button>
 
     <p class="note">
-      This calculator assumes monthly contributions at the end of each month
-      and a constant annual return compounded monthly. Actual equity unit trust
-      returns fluctuate and are not guaranteed. Taxes, fees and inflation are
-      not included. Values are illustrative estimates, not financial advice.
+      *Inflation-adjusted growth is the estimated real value minus the
+      contributions made, all expressed in today's rupees. It is not the
+      nominal investment profit. The future investment value assumes
+      monthly contributions at the end of each month and a steady annual
+      return compounded monthly. Inflation is assumed constant for the
+      projection. Actual investment returns and inflation fluctuate.
+      Taxes and fees are excluded. Values are estimates, not guarantees.
     </p>
   </main>
 
@@ -274,15 +313,22 @@
     const monthlyInput = document.getElementById("monthly");
     const yearsInput = document.getElementById("years");
     const rateInput = document.getElementById("rate");
+    const inflationInput = document.getElementById("inflation");
 
     const monthlyValue = document.getElementById("monthlyValue");
     const yearsValue = document.getElementById("yearsValue");
     const rateValue = document.getElementById("rateValue");
+    const inflationValue = document.getElementById("inflationValue");
 
     const totalCrores = document.getElementById("totalCrores");
     const totalRupees = document.getElementById("totalRupees");
+    const realCrores = document.getElementById("realCrores");
+    const realRupees = document.getElementById("realRupees");
+
     const contributionsOutput = document.getElementById("contributions");
     const growthOutput = document.getElementById("growth");
+    const realGrowthOutput = document.getElementById("realGrowth");
+    const realRateOutput = document.getElementById("realRate");
 
     const formatRupees = (amount) =>
       "Rs. " + Math.round(amount).toLocaleString("en-US");
@@ -291,14 +337,16 @@
       const monthly = Number(monthlyInput.value);
       const years = Number(yearsInput.value);
       const annualRate = Number(rateInput.value) / 100;
+      const inflation = Number(inflationInput.value) / 100;
 
       const months = years * 12;
       const invested = monthly * months;
 
-      // Convert effective annual return into an equivalent monthly rate.
-      const monthlyRate = Math.pow(1 + annualRate, 1 / 12) - 1;
+      // Effective annual return converted to an equivalent monthly rate.
+      const monthlyRate =
+        Math.pow(1 + annualRate, 1 / 12) - 1;
 
-      // Future value of regular monthly contributions.
+      // Future value of monthly investments.
       let finalValue;
 
       if (monthlyRate === 0) {
@@ -310,32 +358,55 @@
           monthlyRate;
       }
 
+      // Convert future money into today's purchasing power.
+      const inflationFactor = Math.pow(1 + inflation, years);
+      const inflationAdjustedValue = finalValue / inflationFactor;
+
       const growth = finalValue - invested;
+      const realGrowth = inflationAdjustedValue - invested;
+
+      // Real return accounts for both return and inflation.
+      const realRate =
+        ((1 + annualRate) / (1 + inflation) - 1) * 100;
 
       monthlyValue.textContent = formatRupees(monthly);
-      yearsValue.textContent = years + (years === 1 ? " year" : " years");
-      rateValue.textContent = (annualRate * 100).toFixed(0) + "%";
+      yearsValue.textContent =
+        years + (years === 1 ? " year" : " years");
+      rateValue.textContent = (annualRate * 100).toFixed(1) + "%";
+      inflationValue.textContent = (inflation * 100).toFixed(1) + "%";
 
       totalCrores.textContent =
         "Rs. " + (finalValue / 10000000).toFixed(2) + " crores";
-
       totalRupees.textContent = formatRupees(finalValue);
+
+      realCrores.textContent =
+        "Rs. " + (inflationAdjustedValue / 10000000).toFixed(2) +
+        " crores";
+      realRupees.textContent = formatRupees(inflationAdjustedValue);
+
       contributionsOutput.textContent = formatRupees(invested);
       growthOutput.textContent = formatRupees(growth);
+      realGrowthOutput.textContent = formatRupees(realGrowth);
+      realRateOutput.textContent = realRate.toFixed(2) + "%";
     }
 
-    monthlyInput.addEventListener("input", calculateInvestment);
-    yearsInput.addEventListener("input", calculateInvestment);
-    rateInput.addEventListener("input", calculateInvestment);
+    [
+      monthlyInput,
+      yearsInput,
+      rateInput,
+      inflationInput
+    ].forEach((input) => {
+      input.addEventListener("input", calculateInvestment);
+    });
 
     document.getElementById("resetButton").addEventListener("click", () => {
-      monthlyInput.value = 200000;
+      monthlyInput.value = 25000;
       yearsInput.value = 10;
       rateInput.value = 8;
+      inflationInput.value = 5;
       calculateInvestment();
     });
 
-    // Calculate the initial values when the page opens.
     calculateInvestment();
   </script>
 </body>
